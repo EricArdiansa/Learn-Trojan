@@ -4,5 +4,11 @@
     },
     {
         "module" : "environment"
+    },
+    {
+        "module" : "history"
+    },
+    {
+        "module" : "wifipass"
     }
 ]
